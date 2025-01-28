@@ -1,0 +1,68 @@
+schemaVersion: 2.2.0
+metadata:
+  generateName: e2e
+components:
+  - name: development-tooling
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi9-latest
+      env:
+        - name: USE_JAVA21
+          value: "true"
+        - name: KUBEDOCK_ENABLED
+          value: "true"
+        - name: DOCKER_HOST
+          value: "tcp://127.0.0.1:2475"
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: "true"
+      memoryLimit: 4Gi
+      cpuLimit: 2500m
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      endpoints:
+        - name: quarkus-dev
+          targetPort: 8080
+          exposure: public
+          secure: false
+          protocol: https
+        - name: debug
+          targetPort: 5005
+          exposure: none
+          secure: false
+          protocol: tcp
+        - name: tests
+          targetPort: 8081
+          exposure: none
+          secure: false
+          protocol: tcp
+  - name: m2
+    volume:
+      size: 1G
+commands:
+  - id: package
+    exec:
+      label: "1. Package the application"
+      component: development-tooling
+      commandLine: "./mvnw package"
+      group:
+        kind: build
+        isDefault: true
+  
+  - id: start-dev
+    exec:
+      label: "2. Start Development mode (Hot reload + debug)"
+      component: development-tooling
+      commandLine: "./mvnw compile quarkus:dev"
+      group:
+        kind: run
+        isDefault: true
+
+  - id: install-quarkus
+    exec:
+      label: "Quarkus install"
+      component: development-tooling
+      commandLine: "source /home/tooling/.sdkman/bin/sdkman-init.sh && sdk install quarkus"
+
+events:
+  postStart:
+    - install-quarkus
