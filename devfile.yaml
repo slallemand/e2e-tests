@@ -4,7 +4,7 @@ metadata:
 components:
   - name: development-tooling
     container:
-      image: quay.io/devfile/universal-developer-image:ubi9-latest
+      image: quay.io/rh_ee_slallema/ubi-e2e:latest
       env:
         - name: USE_JAVA21
           value: "true"
