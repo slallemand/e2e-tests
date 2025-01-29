@@ -63,6 +63,12 @@ commands:
       component: development-tooling
       commandLine: "source /home/tooling/.sdkman/bin/sdkman-init.sh && sdk install quarkus"
 
+  - id: e2e
+    exec:
+      label: "Quarkus install"
+      component: development-tooling
+      commandLine: "python3 e2e.py  --server http://simple-app.my-app.svc.cluster.local:8080"
+
 events:
   postStart:
     - install-quarkus
