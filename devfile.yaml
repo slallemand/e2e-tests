@@ -65,7 +65,7 @@ commands:
 
   - id: e2e
     exec:
-      label: "Quarkus install"
+      label: "E2E"
       component: development-tooling
       commandLine: "python3 e2e.py  --server http://simple-app.my-app.svc.cluster.local:8080"
 
